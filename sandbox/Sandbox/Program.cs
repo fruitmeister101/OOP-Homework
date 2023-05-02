@@ -1,10 +1,11 @@
 using System;
 class Program
 {
+    
     //public static int max = 50;
     static void Main(string[] args)
     {
-        Console.WriteLine("Hello Sandbox World!");
+        Console.WriteLine("Hello Insert Sandbox World!");
         //TestMethod(0);
 
         var x = new Resume();
@@ -63,7 +64,7 @@ class Program
             _jobs.Add(new Job(job));
         }
         void RemoveJob(int i = -1){
-            if (i != -1)
+            if (i < _jobs.Count && i > -1)
             {
                 _jobs.RemoveAt(i);
             }
@@ -72,59 +73,82 @@ class Program
             print($"Name: {_name}\nJobs:");
             for (int i = 0; i < _jobs.Count; i++)
             {
-                string job = _jobs[i].DisplayJob
-    ();
-                print($"\n{i}: {job}");
+                string job = _jobs[i].DisplayJob();
+                print($"\n{i + 1}: {job}");
             }
         }
 
         public void Edit(){
             int i = -1;
+            int x = 0;
+            int[] y =  new int[] {-1, 1, 2, 3}; 
             do{
 
             
-            print($"\nWhat would you like to do? (input number to select)\n1: Add Job\n2: Remove Job\n3: exit");
+            print($"\n\nWhat would you like to do? (input number to select)\n1: Add Job\n2: Remove Job\n3: Print\n4: Exit\n5: Exit and Print\n: ");
             try
             {
                 i = Int32.Parse(read());
                 
             }
-            catch (System.InvalidOperationException)
+            catch (System.FormatException)
             {
-                print("Invalid selection\n\n");
+                print($"Invalid Input {20 - x}");
                 i = -1;
+                x++;
             }
 
             switch (i)
             {   
+                case -1: break;
                 case 1:
                     print("Enter Job Title : ");
                     AddJob(read());
                 break;
                 case 2:
                     print("Remove which job? : ");
-                    for (int j = 0; j < _jobs.Count; i++)
+                    for (int j = 0; j < _jobs.Count; j++)
                     {
-                        string job = _jobs[j].DisplayJob
-            ();
-                        print($"\n{j}: {job}");
+                        string job = _jobs[j].DisplayJob();
+                        print($"\n{j + 1}: {job}");
                     }
                     print("\n");
-                    RemoveJob(Int32.Parse(read()));
+                    try
+                    {
+                        RemoveJob(Int32.Parse(read()) - 1);
+                    }
+                    catch (System.FormatException)
+                    {
+                        print($"Invalid Input {20 - x}");
+                        x++;
+                    }
                 break;
                 case 3:
-                
+                    PrintResume();
+                break;
+                case 4:
+                    Print("Thank you for your time\n\n");
+                break;
+                case 5:
+                    Print("Thank you for your time\n\n");
+                    PrintResume();
                 break;
                 default:
-                    print("Invalid Input");
+                    print($"Invalid Input {20 - x}");
+                    i = -1;
+                    x++;
                 break;
             }
 
 
+            if (x > 20)
+            {
+                Print("\n\nYou are not taking this seriously...\nTry again later\n\n");
+                break;
+            }
 
-
-
-            }while(i == -1 || i == 1 || i == 2);
+            Print("\n");
+            }while(y.Contains(i));
         }
 
     }
