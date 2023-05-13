@@ -1,0 +1,18 @@
+{
+  "entries": [
+    {
+      "date": "5/12/2023 5:49:50 PM",
+      "prompt": {
+        "p": "What did you do today?"
+      },
+      "entry": "stuff\n--5/12/2023 6:00:11 PM--\ntesting editing"
+    },
+    {
+      "date": "5/12/2023 5:49:54 PM",
+      "prompt": {
+        "p": "What did you see today?"
+      },
+      "entry": "computer code"
+    }
+  ]
+}

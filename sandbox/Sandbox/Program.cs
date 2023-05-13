@@ -28,7 +28,7 @@ class Program
     static void TestMethod(int i)
     {
         int max = 50;
-        Console.WriteLine($"Hello hello? Testing testing. You have looped {i} times.");
+        print($"Hello hello? Testing testing. You have looped {i} times.");
         
         for (int j = 0; j < max; j++)
         {
@@ -45,6 +45,16 @@ class Program
     {
         string _jobTitle;
         public Job(string jobTitle = ""){
+            _jobTitle = jobTitle;
+        }
+        public string DisplayJob(){
+            return $"{_jobTitle}";
+        }
+    }
+    class Job1
+    {
+        string _jobTitle;
+        public Job1(string jobTitle = ""){
             _jobTitle = jobTitle;
         }
         public string DisplayJob(){
