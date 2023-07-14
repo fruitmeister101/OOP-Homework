@@ -1,3 +1,4 @@
+/*
 class SquareListener
 {
     Unit parent;
@@ -20,3 +21,4 @@ class SquareListener
         GM.board.GetSquare(x, y).updated -= listener;
     }
 }
+*/
