@@ -1,42 +1,53 @@
 class Attack
 {
-    public DamageType Type;
-    public DamageTag Tag;
-    public int Damage;
-    int cooldown;
-    int maxCooldown;
-    public int[,] Range; // Going to try something crazy here...
+    public DamageType _type;
+    public DamageTag _tag;
+    public int _damage;
+    int _cooldown = 0;
+    int _maxCooldown;
+    public int[,] _range; // Going to try something crazy here...
     // Use of the 2D Array might be complicated. To use effectively, imagine the unit's location as the 0,0'th place, then going out and down.
     // All range is Mirrored across the Unit's X Rank, so a range of 2,2 would cover 6 squares- the one he's on, then up/down and forward 1.
 
     public Attack(int dmg, int[,] r, int cd, DamageType type=DamageType.Physical, DamageTag tag=DamageTag.Blunt)
     {
-        Damage = dmg;
-        Type = type;
-        Tag = tag;
-        Range = r;
-        maxCooldown = cd;
+        _damage = dmg;
+        _type = type;
+        _tag = tag;
+        _range = r;
+        _maxCooldown = cd;
     }
     public Attack BasicAttack()
     {
         return new Attack(1, new int[2,1] { {1} , {1} }, 3);
     }
 
-    public void UseAttack(Team t, Square s)
+    public bool UseAttack(Team t, Square s, bool actuallyHit=true)
     {
-        if (cooldown <= 0)
+        if (_cooldown <= 0)
         {
-            s.HitThisSquare(t, this);
-            cooldown = maxCooldown;
+            
+            
+            
+            if (actuallyHit)
+            {
+                s.HitThisSquare(t, this);
+            }
+
+            _cooldown = _maxCooldown;
+            return true;
         }
         else
         {
-            Update();
+            return false;
         }
     }
     public void Update()
     {
-        cooldown--;
+        if (_cooldown > 0)
+        {
+            _cooldown--;
+        }
     }
 }
 

@@ -1,72 +1,69 @@
 class Interface
 {
-    public int X;
-    public int Y;
-    public int money=0;
-    (char,char,char,char) chars; // Follow the convention: UP DOWN LEFT RIGHT
-    int selectorMaxX;
-    int selectorMaxY;
-    public List<Unit> units;
-    public Interface(int maxX, int maxY, (char,char,char,char) keys)
+    public bool _auto;
+    public int _X;
+    public int _Y;
+    public int _money=0;
+    (char,char,char,char) _chars; // Follow the convention: UP DOWN LEFT RIGHT
+    public int _selectorMaxX;
+    public int _selectorMaxY;
+    public List<Unit> _units;
+    public Interface(int maxX, int maxY, (char,char,char,char) keys, bool auto=false)
     {
-        chars = keys;
-        selectorMaxX = Math.Max(0, maxX);
-        selectorMaxY = Math.Max(0, maxY);
-        units = new();
+        _chars = keys;
+        _selectorMaxX = Math.Max(0, maxX);
+        _X = _selectorMaxX/2;
+        _selectorMaxY = Math.Max(0, maxY);
+        _units = new();
+        _auto = auto;
     }
-
-
     public void DoStuff()
     {
-        money++;
+        _money++;
         if (!Console.KeyAvailable){}
         else
         {
             char k = Program.Read();
-            if (k == chars.Item1)
+            if (k == _chars.Item1)
             {
-                X--;
+                _X--;
             }
-            if (k == chars.Item2)
+            if (k == _chars.Item2)
             {
-                X++;
+                _X++;
             }
-            if (k == chars.Item3)
+            if (k == _chars.Item3)
             {
-                Y++;
+                _Y--;
             }
-            if (k == chars.Item4)
+            if (k == _chars.Item4)
             {
-                Y--;
+                _Y++;
             }
             WrapSelectors();
         }
     }
-
     void WrapSelectors()
     {
-        if (Y > selectorMaxY)
+        if (_Y > _selectorMaxY)
         {
-            Y = 0;
+            _Y = 0;
         }
-        if (Y < 0)
+        if (_Y < 0)
         {
-            Y = selectorMaxY;
+            _Y = _selectorMaxY;
         }
-        if (X > selectorMaxX)
+        if (_X > _selectorMaxX)
         {
-            X = 0;
+            _X = 0;
         }
-        if (X < 0)
+        if (_X < 0)
         {
-            X = selectorMaxX;
+            _X = _selectorMaxX;
         }
     }
-
     public void Spend(int amount)
     {
-        money -= amount;
+        _money -= amount;
     }
-
-
 }

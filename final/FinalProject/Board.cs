@@ -1,51 +1,51 @@
 class Board
 {
-    HashSet<Unit> ActiveUnits = new();
-    public int boardXSize {get;set;}
-    public int boardYSize {get;set;}
-    Square[,] BoardSquares;
-    List<Unit> Units;
+    HashSet<Unit> _activeUnits = new();
+    public int _boardXSize {get;set;}
+    public int _boardYSize {get;set;}
+    Square[,] _boardSquares;
+    List<Unit> _units;
     public Board(int x, int y)
     {
-        boardXSize = y;
-        boardYSize = x;
+        _boardXSize = y;
+        _boardYSize = x;
         InitBoard();
     }
     void InitBoard()
     {
-        BoardSquares = new Square[boardXSize, boardYSize];
-        for (int X = 0; X < boardXSize; X++)
+        _boardSquares = new Square[_boardXSize, _boardYSize];
+        for (int X = 0; X < _boardXSize; X++)
         {
-            for (int Y = 0; Y < boardYSize; Y++)
+            for (int Y = 0; Y < _boardYSize; Y++)
             {
-                BoardSquares[X,Y] = new Square(X,Y);
+                _boardSquares[X,Y] = new Square(X,Y);
             }
         }
-        Units = new();
+        _units = new();
     }
-    public void PrintBoard()
+    public string PrintBoard()
     {
         string K = "";
-        for (int X = 0; X < boardXSize; X++)
+        for (int X = 0; X < _boardXSize; X++)
         {
-            if (GM.P1.X == X){K += "->";}
+            if (GM.P1._X == X){K += "->";}
             else{K += "  ";}
             K += $"|";
-            for (int Y = 0; Y < boardYSize; Y++)
+            for (int Y = 0; Y < _boardYSize; Y++)
             {
-                K += BoardSquares[X,Y].GetSymbol();
+                K += _boardSquares[X,Y].GetSymbol();
             }
             K += "|";
-            if (GM.P2.X == X){K += "<-";}
+            if (GM.P2._X == X){K += "<-";}
             else{K += "  ";}
 
             K += "\n";
 
         }
 
-        Program.Print(K);
+        return K;
     }
-    public void PrintScore()
+    public string PrintScore()
     {
         string K = "";
         for (int i = 0; i < GM.TugMax * 2; i++)
@@ -59,36 +59,81 @@ class Board
                 K += " -";
             }
         }
-        var j = (GM.board.boardYSize - K.Length) / 2;
+        var j = (GM.board._boardYSize - K.Length) / 2;
         for (int i = 0; i < j; i++)
         {
             K = " " + K;
         }
-        Program.Print("\n" + K);
+        return K;
+    }
+    public string PrintSelection()
+    {
+        string K = "\n\n";
+        K += "Unit: ";
+        K += $"{GM.UnitList[GM.P1._Y]._symbol} ";
+        switch (GM.P1._Y)
+        {
+            case 0:
+            K += $"Soldier - Cheap and Simple, effective in clumps. Medium speed                                                                    ";
+            break;
+            case 1:
+            K += $"Bowman - Costly to produce, but long-ranged. Slow speed                                                                          ";
+            break;
+            case 2:
+            K += $"Crossbowman - Very costly to produce, Ranged, and can hit nearby lanes. Slow speed, struggles in short-range                     ";
+            break;
+            case 3:
+            K += $"Halberdier - A slower but stronger soldier, capable of hitting nearby lanes                                                      ";
+            break;
+            case 4:
+            K += $"Scout - Cheap and Fast! Very weak                                                                                                ";
+            break;
+            case 5:
+            K += $"Tank - Very slow, Very tough, Very expensive. Backup is recommended                                                              ";
+            break;
+            case 6:
+            K += $"Ninja - Very Fast and Very strong with a Huge range, Teleports to attacked squares. Such great power comes with a price however  ";
+            break;
+            case 7:
+            K += $"Summoner - Slow, but summons temporary zombies to fight for them. Zombies are mediocre, but strong in numbers                    ";
+            break;
+            default:
+            K += "This selection does not exist yet                                                                                                 ";
+            break;
+        }
+        K += $"\n Currency: {GM.P1._money / 10}{GM.P1._money % 10} / {GM.UnitList[GM.P1._Y]._cost}      " ;
+
+        return K;
+    }
+    public string PrintKeys()
+    {
+        string K = "\n\nUse W and S to move the cursor up and down\nUse A and D to change selected unit";
+
+        return K;
     }
     public Square GetSquare(int x, int y)
     {
-        if (x > boardXSize || x < 0 || y > boardYSize || y < 0)
+        if (x >= _boardXSize || x < 0 || y >= _boardYSize || y < 0)
         {
             return null;
         }
-        return BoardSquares[x,y];
+        return _boardSquares[x,y];
     }
     public void ObjectMovedTo(Unit unit, int x, int y)
     {
-        if (x >= boardXSize || y >= boardYSize || x < 0 || y < 0)
+        if (x >= _boardXSize || y >= _boardYSize || x < 0 || y < 0)
         {
             return;
         }
-        BoardSquares[x,y].Occupy(unit);
+        _boardSquares[x,y].Occupy(unit);
     }
     public void ObjectMovedAway(Unit unit, int x, int y)
     {
-        if (x >= boardXSize || y >= boardYSize || x < 0 || y < 0)
+        if (x >= _boardXSize || y >= _boardYSize || x < 0 || y < 0)
         {
             return;
         }
-        BoardSquares[x,y].DeOccupy(unit);
+        _boardSquares[x,y].DeOccupy(unit);
     }
 
 
@@ -96,17 +141,17 @@ class Board
 
     public void CreateUnit(Unit unit)
     {
-        ActiveUnits.Add(unit);
+        _activeUnits.Add(unit);
     }
     public void DestroyUnit(Unit unit)
     {
-        ActiveUnits.Remove(unit);
+        _activeUnits.Remove(unit);
     }
     public void UpdateAll()
     {
-        for (int u = 0; u < ActiveUnits.Count(); u++)
+        for (int u = 0; u < _activeUnits.Count(); u++)
         {
-            ActiveUnits.ElementAt(u).Update();
+            _activeUnits.ElementAt(u).Update();
         }
     }
 
