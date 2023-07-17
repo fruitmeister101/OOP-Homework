@@ -7,6 +7,9 @@ static class Program
         Console.WriteLine("Hello FinalProject World!");
 
         GM.NewGame(DateTime.Now.Microsecond);
+        /*
+        GM.NewGame(2);
+        */
     }
 
     public static void Print(string text="")

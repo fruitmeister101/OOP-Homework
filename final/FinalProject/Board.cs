@@ -5,11 +5,13 @@ class Board
     public int _boardYSize {get;set;}
     Square[,] _boardSquares;
     List<Unit> _units;
+    int[] _bias;
     public Board(int x, int y)
     {
         _boardXSize = y;
         _boardYSize = x;
         InitBoard();
+        _bias = new int[_boardXSize];
     }
     void InitBoard()
     {
@@ -142,10 +144,15 @@ class Board
     public void CreateUnit(Unit unit)
     {
         _activeUnits.Add(unit);
+        _bias[unit.GetLocation().Item1]++;
     }
     public void DestroyUnit(Unit unit)
     {
         _activeUnits.Remove(unit);
+        if (unit.GetTeam() != Team.Obstacle)
+        {
+            _bias[unit.GetLocation().Item1]--;
+        }
     }
     public void UpdateAll()
     {
@@ -154,6 +161,23 @@ class Board
             _activeUnits.ElementAt(u).Update();
         }
     }
+    public int GetBias()
+    {
+        int max = -1;
+        int sel = 0;
+        int best = 0;
+        foreach (var i in _bias)
+        {
+            if (i > max && i > 0)
+            {
+                max = i;
+                best = sel;
+            }
+            sel++;
+        }
+        return best;
+    } 
+    
 
 
 

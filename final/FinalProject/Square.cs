@@ -30,7 +30,7 @@ class Square
     }
     public bool IsOccupiedByEnemy(Team t)
     {
-        if (_occupied.Where(x => /*x.GetTeam() != Team.Obstacle &&*/ x.GetTeam() != t).Count() > 0)
+        if (_occupied.Where(x => x.GetTeam() != /*Team.Obstacle && x.GetTeam() !=*/ t).Count() > 0)
         {
             return true;
         }

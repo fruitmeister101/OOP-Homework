@@ -39,7 +39,7 @@ static class GM
         RNG = new Random(seed);
         board = new Board(125, 18);
         Tug = 0;
-        TugMax = 10;
+        TugMax = 25;
         /*
         board.CreateUnit(Unit.Soldier(Team.Player, 3, 10));
         board.CreateUnit(Unit.Soldier(Team.Player, 4, 10));
@@ -59,7 +59,7 @@ static class GM
         board.CreateUnit(Unit.Halberdier(Team.Enemy, 9, 40));
         board.CreateUnit(Unit.Halberdier(Team.Enemy, 10, 40));
         */
-        P1 = new(board._boardXSize -1, UnitList.Count() - 1, ('w','s','a','d'));
+        P1 = new(board._boardXSize -1, UnitList.Count() - 1, ('w','s','a','d'), false);
         P2 = new(board._boardXSize -1, UnitList.Count() - 1, ('i','k','j','l'), true);
 
         RunGame();
@@ -93,6 +93,10 @@ static class GM
     {
         PlayerSelection(P1, Team.Player);
         PlayerSelection(P2, Team.Enemy);
+        /*
+        PlayerSelection(P2, Team.Enemy);
+        PlayerSelection(P2, Team.Enemy);
+        */
     }
     static void PrintEverything()
     {
@@ -142,8 +146,21 @@ static class GM
                 {
                     board.CreateUnit(Unit.Copy(t, p._X, t == Team.Player ? -1 : 125 , UnitList[p._Y]));
                 }
-                p._X = RNG.Next(0, p._selectorMaxX + 1);
+
+                if (RNG.Next(0,5) != 0)
+                {
+                    var b = board.GetBias();
+                    if (b > 0)
+                    {
+                        p._X = int.Clamp(b + RNG.Next(-2, 3), 0, p._selectorMaxX);
+                    }
+                }
+                else
+                {
+                    p._X = RNG.Next(0, p._selectorMaxX + 1);
+                }
                 p._Y = RNG.Next(0, p._selectorMaxY + 1);
+
             }
         }
     }

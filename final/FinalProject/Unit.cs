@@ -29,7 +29,7 @@ class Unit
         }
         else
         {
-            _attack = a;
+            _attack = new Attack(a);
         }
         _lifetime = LT; // For summons, mostly
         _scores = canScore; // does this unit count if it crosses the enemy line, or is it less important
@@ -73,6 +73,10 @@ class Unit
         }
         // Check how the square we are listening to has changed
     }
+    public (int, int) GetLocation()
+    {
+        return (_posX,_posY);
+    }
     void UpdateSquaresInRange()
     {
         HashSet<Square> templist = new();
@@ -84,18 +88,18 @@ class Unit
                 if (_attack._range[Y,X] != 0)
                 {
                     int tempX = _posX + X;
-                    int tempY = _posY + + (_team == Team.Player ? Y : -Y );
+                    int tempY = _posY + (_team == Team.Player ? Y : -Y );
                     if (tempX < GM.board._boardXSize && tempX >= 0 && tempY < GM.board._boardYSize && tempY >= 0)
                     {
-                        var tempSquare = GM.board.GetSquare(_posX + X, _posY + (_team == Team.Player ? Y : -Y ));
+                        var tempSquare = GM.board.GetSquare(tempX, tempY);
                         if (tempSquare != null)
                         {
                             templist.Add(tempSquare);
                         }
                     }
-                    if (tempX < GM.board._boardXSize && tempX >= 0 && tempY < GM.board._boardYSize && tempY >= 0)
+                    if (_posX - X < GM.board._boardXSize && _posX - X >= 0 && tempY < GM.board._boardYSize && tempY >= 0)
                     {
-                        var tempSquare = GM.board.GetSquare(_posX - X, _posY + (_team == Team.Player ? Y : -Y));
+                        var tempSquare = GM.board.GetSquare(_posX - X, tempY);
                         if (tempSquare != null)
                         {
                             templist.Add(tempSquare);
@@ -110,26 +114,12 @@ class Unit
             ListenToSquare(s, true);
         }
         // Scrub the list of outdated squares
-        /*for (int i = 0; i < temp.Count(); i++)
-        {
-            ListenToSquare(temp.ElementAt(i).Key, false);
-            Listeners.Remove(temp.ElementAt(i).Key);
-        }*/
         var temp = _listeners.Where(x => !templist.Contains(x.Key));
         foreach (var s in temp)
         {
             ListenToSquare(s.Key, false);
             _listeners.Remove(s.Key);
         }
-        /*
-        for (int i = 0; i < squaresInRange.Count(); i++)
-        {
-            if (templist.Contains(squaresInRange.ElementAt(i))!)
-            {
-                squaresInRange.Remove(squaresInRange.ElementAt(i));
-                i--;
-            }
-        }*/
     }
 
     protected void Move()
@@ -149,7 +139,7 @@ class Unit
         GM.board.ObjectMovedAway(this, _posX, _posY);
         if (_scores)
         {
-            if (_posY > GM.board._boardYSize)
+            if (_posY > GM.board._boardYSize && _team!=Team.Enemy)
             {
                 GM.Tug--;
                 Die();
@@ -200,20 +190,15 @@ class Unit
     {
         if (_state == State.Attacking)
         {
-            try
+            var s = _listeners.Where(x => x.Key.IsOccupiedByEnemy(_team));
+            if (s.Count() > 0)
             {
-                var s = _listeners.Where(x => x.Key.IsOccupiedByEnemy(_team));
-                if (s.Count() > 0)
-                {
-                    Attack(s.ElementAt(0).Key);            
-                }
-                else
-                {
-                    _state= State.Moving;
-                }
+                Attack(s.ElementAt(s.Count() - 1).Key);            
             }
-            catch (ArgumentOutOfRangeException){_state = State.Moving;}
-            catch (System.Exception){throw;}
+            else
+            {
+                _state= State.Moving;
+            }
         }
         if (_state == State.Moving)
         {
@@ -232,7 +217,7 @@ class Unit
     // Generic Units
     static public Unit Soldier(Team team, int x, int y, int lifetime = -1)
     {
-        return new Unit(team, x, y, new(3, new int[3,1]{{1},{1},{1}}, 7), 15, 2, lifetime, lifetime == -1, "§", 15);
+        return new Unit(team, x, y, new(2, new int[3,1]{{1},{1},{1}}, 4), 15, 2, lifetime, lifetime == -1, "§", 15);
     }
     static public Unit Bowman(Team team, int x, int y, int lifetime = -1)
     {
@@ -240,7 +225,7 @@ class Unit
     }
     static public Unit Crossbowman(Team team, int x, int y, int lifetime = -1)
     {
-        return new Unit(team, x, y, new(7, new int[8,3]{{0,1,1},{0,1,1},{0,1,1},{1,1,1},{1,1,1},{1,1,1},{1,0,0},{1,0,0}}, 40), 7, 6, lifetime, lifetime == -1, "T", 55);
+        return new Unit(team, x, y, new(7, new int[8,3]{{0,1,1},{0,1,1},{0,1,1},{1,1,1},{1,1,1},{1,1,1},{1,0,0},{1,0,0}}, 25), 7, 6, lifetime, lifetime == -1, "T", 55);
     }
     static public Unit Halberdier(Team team, int x, int y, int lifetime = -1)
     {
@@ -260,11 +245,11 @@ class Unit
     }
     static public Summoner Summoner(Team team, int x, int y, int lifetime = -1)
     {
-        return new Summoner(team, x, y, new(20, new int[8,3]{{0,0,0},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1}}, 35), 10, 4, lifetime, lifetime == -1, "♣", 85);
+        return new Summoner(team, x, y, new(20, new int[8,3]{{0,0,0},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1},{1,1,1}}, 32), 10, 4, lifetime, lifetime == -1, "♣", 65);
     }
     static public Unit Zombie(Team team, int x, int y, int lifetime = -1)
     {
-        return new Unit(team, x, y, new(1, new int[1,1]{{1}}, 8), 10, 2, lifetime, lifetime == -1, "Z", 0);
+        return new Unit(team, x, y, new(3, new int[1,1]{{1}}, 8), 10, 5, lifetime, lifetime == -1, "Z", 0);
     }
 }
 

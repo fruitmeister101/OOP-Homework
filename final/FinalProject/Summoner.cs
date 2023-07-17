@@ -12,7 +12,7 @@ class Summoner : Unit
     {
         if (_attack.UseAttack(_team, GM.board.GetSquare(square.Location()[0], _posY), false))
         {
-            GM.board.CreateUnit(Unit.Copy(_team, square.Location()[0], _posY, _unit, 55));
+            GM.board.CreateUnit(Unit.Copy(_team, square.Location()[0], _posY, _unit, 75));
         }
         
 

@@ -17,6 +17,14 @@ class Attack
         _range = r;
         _maxCooldown = cd;
     }
+    public Attack(Attack a)
+    {
+        _damage = a._damage;
+        _type = a._type;
+        _tag = a._tag;
+        _range = a._range;
+        _maxCooldown = a._maxCooldown;
+    }
     public Attack BasicAttack()
     {
         return new Attack(1, new int[2,1] { {1} , {1} }, 3);
