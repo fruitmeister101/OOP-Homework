@@ -17,31 +17,31 @@ class Interface
         _units = new();
         _auto = auto;
     }
-    public void DoStuff()
+    public void DoStuff(char? k = null)
     {
         _money++;
-        if (!Console.KeyAvailable){}
-        else
+        if (k == _chars.Item1)
         {
-            char k = Program.Read();
-            if (k == _chars.Item1)
-            {
-                _X--;
-            }
-            if (k == _chars.Item2)
-            {
-                _X++;
-            }
-            if (k == _chars.Item3)
-            {
-                _Y--;
-            }
-            if (k == _chars.Item4)
-            {
-                _Y++;
-            }
-            WrapSelectors();
+            _X--;
         }
+        else if (k == _chars.Item2)
+        {
+            _X++;
+        }
+        else if (k == _chars.Item3)
+        {
+            _Y--;
+        }
+        else if (k == _chars.Item4)
+        {
+            _Y++;
+        }
+        if (_auto && k != null && k != ' ' && k != ',' && _chars.ToString().Contains((char)k))
+        {
+            var temp = _chars.ToString();
+            _auto = false;
+        }
+        WrapSelectors();
     }
     void WrapSelectors()
     {

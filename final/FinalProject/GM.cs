@@ -26,6 +26,8 @@ static class GM
         Thread.Sleep(0750);
         Program.Print("You are the Left Army, your opponent - the Right\n");
         Thread.Sleep(0750);
+        Program.Print("(Grab a friend! A second player can use I K J L)\n");
+        Thread.Sleep(0750);
         Program.Print("Press Any Key when Ready");
         while (!Console.KeyAvailable)
         {
@@ -39,7 +41,7 @@ static class GM
         RNG = new Random(seed);
         board = new Board(125, 18);
         Tug = 0;
-        TugMax = 25;
+        TugMax = 30;
         /*
         board.CreateUnit(Unit.Soldier(Team.Player, 3, 10));
         board.CreateUnit(Unit.Soldier(Team.Player, 4, 10));
@@ -59,7 +61,7 @@ static class GM
         board.CreateUnit(Unit.Halberdier(Team.Enemy, 9, 40));
         board.CreateUnit(Unit.Halberdier(Team.Enemy, 10, 40));
         */
-        P1 = new(board._boardXSize -1, UnitList.Count() - 1, ('w','s','a','d'), false);
+        P1 = new(board._boardXSize -1, UnitList.Count() - 1, ('w','s','a','d'), true);
         P2 = new(board._boardXSize -1, UnitList.Count() - 1, ('i','k','j','l'), true);
 
         RunGame();
@@ -79,7 +81,7 @@ static class GM
         while (GameNotEnded) // Main Loop!!
         {
             time.Restart();
-            CheckKeyboard();
+            HandlePlayers();
             board.UpdateAll();
             PrintEverything();
             GameNotEnded = CheckGameEnded();
@@ -89,13 +91,21 @@ static class GM
         string win = Tug < 0 ? "Win" : "Lose";
         Program.Print($"\nGAME!\nYou {win}!");
     }
-    static void CheckKeyboard()
+    static void HandlePlayers()
     {
-        PlayerSelection(P1, Team.Player);
-        PlayerSelection(P2, Team.Enemy);
+        char? k = null;
+        if (Console.KeyAvailable)
+        {
+            k = Program.Read();
+        }
+        PlayerSelection(P1, Team.Player, k);
+        PlayerSelection(P2, Team.Enemy, k);
+        if (P2._auto)
+        {
+            PlayerSelection(P2, Team.Enemy, k); // Because a real player is literally twice as good as 2 cpus...
+        }
         /*
-        PlayerSelection(P2, Team.Enemy);
-        PlayerSelection(P2, Team.Enemy);
+        PlayerSelection(P2, Team.Enemy, k);
         */
     }
     static void PrintEverything()
@@ -104,9 +114,9 @@ static class GM
         Program.Print(board.PrintBoard() + board.PrintScore() + board.PrintSelection() + board.PrintKeys());
 
     }
-    static void PlayerSelection(Interface p, Team t)
+    static void PlayerSelection(Interface p, Team t, char? k = null)
     {
-        p.DoStuff();
+        p.DoStuff(k);
         if (!p._auto)
         {
             if (p._money >= UnitList[p._Y]._cost)

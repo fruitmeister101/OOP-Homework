@@ -65,9 +65,17 @@ class Square
             _gotHit = false;
             return "X";
         }
-        if (_occupied.Count() > 0)
+        if (_occupied.Count() == 1)
         {
             return _occupied[_occupied.Count - 1]._symbol;
+        }
+        else if (_occupied.Count() > 1)
+        {
+            if (_occupied.Count() > 9)
+            {
+                return "0";
+            }
+            return $"{_occupied.Count()}";
         }
         else
         {
