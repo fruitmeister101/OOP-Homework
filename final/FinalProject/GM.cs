@@ -61,7 +61,7 @@ static class GM
         board.CreateUnit(Unit.Halberdier(Team.Enemy, 9, 40));
         board.CreateUnit(Unit.Halberdier(Team.Enemy, 10, 40));
         */
-        P1 = new(board._boardXSize -1, UnitList.Count() - 1, ('w','s','a','d'), true);
+        P1 = new(board._boardXSize -1, UnitList.Count() - 1, ('w','s','a','d'), false);
         P2 = new(board._boardXSize -1, UnitList.Count() - 1, ('i','k','j','l'), true);
 
         RunGame();
@@ -100,13 +100,14 @@ static class GM
         }
         PlayerSelection(P1, Team.Player, k);
         PlayerSelection(P2, Team.Enemy, k);
+        if (P1._auto)
+        {
+            PlayerSelection(P1, Team.Player); // Because a real player is literally twice as good as 2 cpus...
+        }
         if (P2._auto)
         {
-            PlayerSelection(P2, Team.Enemy, k); // Because a real player is literally twice as good as 2 cpus...
+            PlayerSelection(P2, Team.Enemy); // Because a real player is literally twice as good as 2 cpus...
         }
-        /*
-        PlayerSelection(P2, Team.Enemy, k);
-        */
     }
     static void PrintEverything()
     {

@@ -144,12 +144,15 @@ class Board
     public void CreateUnit(Unit unit)
     {
         _activeUnits.Add(unit);
-        _bias[unit.GetLocation().Item1]++;
+        if (unit.GetTeam() == Team.Player)
+        {
+            _bias[unit.GetLocation().Item1]++;
+        }
     }
     public void DestroyUnit(Unit unit)
     {
         _activeUnits.Remove(unit);
-        if (unit.GetTeam() != Team.Obstacle)
+        if (unit.GetTeam() == Team.Player)
         {
             _bias[unit.GetLocation().Item1]--;
         }
