@@ -59,7 +59,7 @@ class Attack
     }
 }
 
-
+// There were plans here, but it's outside the scope for this project. Maybe I'll impliment this on my own time...
 public enum DamageType
 {
     Physical,

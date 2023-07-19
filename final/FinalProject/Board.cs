@@ -139,15 +139,18 @@ class Board
     }
 
 
-
+    public HashSet<Unit> GetActiveUnits()
+    {
+        return _activeUnits;
+    }
 
     public void CreateUnit(Unit unit)
     {
-        _activeUnits.Add(unit);
-        if (unit.GetTeam() == Team.Player)
+        if (unit.GetTeam() == Team.Player && !_activeUnits.Contains(unit))
         {
             _bias[unit.GetLocation().Item1]++;
         }
+        _activeUnits.Add(unit);
     }
     public void DestroyUnit(Unit unit)
     {

@@ -33,7 +33,7 @@ class Unit
         }
         _lifetime = LT; // For summons, mostly
         _scores = canScore; // does this unit count if it crosses the enemy line, or is it less important
-        if (_team != Team.Obstacle)
+        if (_team != Team.Obstacle && !GM.board.GetActiveUnits().Contains(this))
         {
             GM.board.CreateUnit(this);
         }
@@ -200,7 +200,7 @@ class Unit
                 _state= State.Moving;
             }
         }
-        if (_state == State.Moving)
+        else if (_state == State.Moving)
         {
             Move();
         }
